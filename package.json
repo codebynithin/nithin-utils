@@ -1,0 +1,68 @@
+{
+  "name": "@codebynithin/nithin-utils",
+  "version": "1.0.0",
+  "description": "Nithin utilities cli",
+  "main": "index.js",
+  "author": "Nithin V <mails2nithin@gmail.com>",
+  "bin": {
+    "nu": "index.js"
+  },
+  "scripts": {
+    "start": "node index",
+    "start:dev": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"services/*.js\" --fix",
+    "prettier": "prettier \"services/*.js\" --write",
+    "release": "semantic-release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codebynithin/nithin-utils.git"
+  },
+  "keywords": [
+    "nithin"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codebynithin/nithin-utils/issues"
+  },
+  "homepage": "https://github.com/codebynithin/nithin-utils#readme",
+  "dependencies": {
+    "axios": "~1.7.7",
+    "chalk": "~4.1.2",
+    "cheerio": "~1.0.0-rc.12",
+    "compression": "~1.7.4",
+    "date-fns": "~2.30.0",
+    "date-fns-tz": "~2.0.1",
+    "dotenv": "~16.4.5",
+    "form-data": "~4.0.0"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "6.0.3",
+    "@semantic-release/git": "10.0.1",
+    "@semantic-release/npm": "12.0.1",
+    "@typescript-eslint/eslint-plugin": "~7.3.1",
+    "eslint": "~8.57.0",
+    "eslint-config-semistandard": "~17.0.0",
+    "eslint-config-standard": "~17.1.0",
+    "eslint-plugin-import": "~2.29.1",
+    "eslint-plugin-n": "~15.7.0",
+    "eslint-plugin-promise": "~6.1.1",
+    "husky": "~4.3.6",
+    "lint-staged": "~15.2.2",
+    "prettier": "~3.2.5",
+    "semantic-release": "24.2.0"
+  },
+  "lint-staged": {
+    "**/*.(js)": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "type": "commonjs"
+}
