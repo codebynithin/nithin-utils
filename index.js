@@ -8,11 +8,11 @@ const initNpm = async () => {
     type = 'help';
   }
 
-  if (type === 'init') {
+  /* if (type === 'init') {
     init();
-  } else {
-    processArgs(type, value?.join(' '));
-  }
+  } else { */
+  processArgs(type, value?.join(' '));
+  // }
 };
 
 initNpm();
