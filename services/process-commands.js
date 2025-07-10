@@ -1,19 +1,19 @@
 // const { checkConfig } = require('./init-config');
-const { removeEmpty } = require('./utils');
 const { build } = require('./build');
 const { ACTIONS } = require('./enums/actions.enum');
+const { convertParamsTpMap } = require('./utils');
 const processArgs = async (type, value) => {
   try {
     // await checkConfig();
 
-    const values = value ? removeEmpty(value?.split(' -')) : value;
+    const values = convertParamsTpMap(value);
 
     switch (type) {
-      case ACTIONS.DEPLOY: {
+      /* case ACTIONS.DEPLOY: {
         await deploy(values);
 
         break;
-      }
+      } */
 
       case ACTIONS.BUILD: {
         await build(values);
@@ -21,11 +21,11 @@ const processArgs = async (type, value) => {
         break;
       }
 
-      case ACTIONS.SIMPLE_DEPLOY: {
+      /* case ACTIONS.SIMPLE_DEPLOY: {
         await simpleDeploy(values);
 
         break;
-      }
+      } */
 
       case ACTIONS.VERSION: {
         const path = require('path');
