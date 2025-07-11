@@ -1,8 +1,9 @@
 const path = require('path');
+
 require('dotenv').config({ path: path.resolve(require('os').homedir(), 'Desktop/.env.nu') });
 
 const csrfToken = process.env.CSRF_TOKEN;
-const cookie = process.env.COOKIE;
+const Cookie = process.env.COOKIE;
 const keyMap = {
   components: 'components',
   c: 'components',
@@ -23,74 +24,78 @@ const projectMap = {
   gateway: 'gateway-app',
   phr: 'phr',
 };
+const buildBranchMap = {
+  dev: 'dev-qa-testing',
+  qa: 'qa-testing',
+  pilot: 'pilot-release',
+};
+const deploymentBranchMap = {
+  dev: 'dev-qa-testing',
+  qa: 'qa-testing',
+  pilot: 'development',
+};
+const imageTagMap = {
+  qa: 'qa',
+  pilot: 'demo',
+};
+const buildHeaders = (url) => ({
+  'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0',
+  Accept: 'application/json, text/plain, */*',
+  'Accept-Language': 'en-US,en;q=0.5',
+  'Accept-Encoding': 'gzip, deflate, br',
+  Referer: `${url}/new`,
+  'X-CSRF-Token': csrfToken,
+  'X-Requested-With': 'XMLHttpRequest',
+  'Content-Type': 'application/json',
+  Origin: 'https://gitlab.4medica.net',
+  Connection: 'keep-alive',
+  Cookie,
+  'Sec-Fetch-Dest': 'empty',
+  'Sec-Fetch-Mode': 'cors',
+  'Sec-Fetch-Site': 'same-origin',
+  TE: 'trailers',
+});
+const makeConfig = (url, data) => ({
+  method: 'post',
+  maxBodyLength: Infinity,
+  url,
+  data: JSON.stringify(data),
+  headers: buildHeaders(url),
+});
 const generateBuildConfigs = (values = {}) => {
   const configs = [];
-  const branchMap = {
-    dev: 'dev-qa-testing',
-    qa: 'qa-testing',
-    pilot: 'pilot-release',
-  };
-  const instanceMap = {
-    qa: 'qa',
-    pilot: 'demo',
-  };
 
   if (!values.components) {
     console.log('Invalid build parameters');
-    return;
+
+    return { configs };
   }
 
-  // Helper for headers
-  const buildHeaders = (url) => ({
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0',
-    Accept: 'application/json, text/plain, */*',
-    'Accept-Language': 'en-US,en;q=0.5',
-    'Accept-Encoding': 'gzip, deflate, br',
-    Referer: `${url}/new`,
-    'X-CSRF-Token': csrfToken,
-    'X-Requested-With': 'XMLHttpRequest',
-    'Content-Type': 'application/json',
-    Origin: 'https://gitlab.4medica.net',
-    Connection: 'keep-alive',
-    Cookie: cookie,
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-origin',
-    TE: 'trailers',
-  });
+  const variables_attributes = [];
 
-  // Prepare build data
-  const baseRef = values.branch
-    ? `refs/heads/${branchMap[values.branch] || values.branch}`
-    : `refs/heads/${branchMap.dev}`;
-  const dataBase = {
-    ref: baseRef,
-    variables_attributes: [],
-  };
-
-  // Handle instance/tag
   if (values.instance) {
-    dataBase.variables_attributes.push({
+    variables_attributes.push({
       variable_type: 'env_var',
       key: 'TAG',
-      secret_value: instanceMap[values.instance],
+      secret_value: buildBranchMap[values.instance],
     });
+
+    if (!values.branch) {
+      values.branch = buildBranchMap[values.instance];
+    }
   }
 
-  // Helper for config creation (clone dataBase to avoid mutation)
-  const makeConfig = (url, data) => ({
-    method: 'post',
-    maxBodyLength: Infinity,
-    url,
-    data: JSON.stringify(data),
-    headers: buildHeaders(url),
-  });
-
-  const project = values.project || projectMap.portal;
-  const comps = values.components;
+  const baseRef = values.branch
+    ? `refs/heads/${buildBranchMap[values.branch] || values.branch}`
+    : `refs/heads/${buildBranchMap.dev}`;
+  const dataBase = {
+    ref: baseRef,
+    variables_attributes,
+  };
+  const project = projectMap[values.project] || projectMap.portal;
 
   // Client config
-  if (comps.includes('client')) {
+  if (values.components.includes('client')) {
     configs.push(
       makeConfig(`https://gitlab.4medica.net/cxd/${project}${componentMap.client}/-/pipelines`, {
         ...dataBase,
@@ -100,10 +105,10 @@ const generateBuildConfigs = (values = {}) => {
 
   // Backend config (admin, provider, rest-api)
   const backendComps = ['administration', 'provider', 'rest-api'];
-  if (backendComps.some((c) => comps.includes(c))) {
+  if (backendComps.some((c) => values.components.includes(c))) {
     const apps = [];
-    if (comps.includes('administration')) apps.push('administration');
-    if (comps.includes('provider')) apps.push('provider');
+    if (values.components.includes('administration')) apps.push('administration');
+    if (values.components.includes('provider')) apps.push('provider');
 
     const backendData = {
       ...dataBase,
@@ -130,14 +135,64 @@ const generateBuildConfigs = (values = {}) => {
 
   return { configs };
 };
-const convertParamsTpMap = (item) => {
+const generateDeployConfigs = (values = {}) => {
+  const variables_attributes = [];
+  let configs = {};
+
+  if (!values.instance) {
+    values.instance = 'dev';
+  }
+
+  values.branch = buildBranchMap[values.instance] || buildBranchMap.dev;
+
+  if (values.instance === 'qa') {
+    variables_attributes.push({
+      variable_type: 'env_var',
+      key: 'IMAGE_TAG',
+      secret_value: values.instance,
+    });
+  }
+
+  if (values.instance !== 'dev') {
+    variables_attributes.push({
+      variable_type: 'env_var',
+      key: 'INSTANCE',
+      secret_value: imageTagMap[values.instance],
+    });
+  }
+
+  if (values.instance === 'pilot') {
+    variables_attributes.push({
+      variable_type: 'env_var',
+      key: 'COMPONENT',
+      secret_value: 'client-pilot',
+    });
+  } else {
+    variables_attributes.push({
+      variable_type: 'env_var',
+      key: 'COMPONENT',
+      secret_value: values.components || 'client',
+    });
+  }
+
+  const project = projectMap[values.project] || projectMap.portal;
+
+  // Client config
+  configs = makeConfig(`https://gitlab.4medica.net/cxd/${project}-deployment/-/pipelines`, {
+    ref: `refs/heads/${deploymentBranchMap[values.instance]}`,
+    variables_attributes,
+  });
+
+  return { configs };
+};
+const convertParamsToMap = (item) => {
   return item?.split('-')?.reduce((acc, item) => {
     if (!item) {
       return acc;
     }
 
     let [key, ...itemValues] = item.split(' ');
-    let itemValue = itemValues.join(' ');
+    let itemValue = itemValues.join(' ').trim();
 
     if (key.charAt(0) === '-') {
       key = key.substring(1);
@@ -150,6 +205,7 @@ const convertParamsTpMap = (item) => {
 };
 
 module.exports = {
-  convertParamsTpMap,
+  convertParamsToMap,
   generateBuildConfigs,
+  generateDeployConfigs,
 };

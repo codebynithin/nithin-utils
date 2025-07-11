@@ -1,19 +1,20 @@
 // const { checkConfig } = require('./init-config');
 const { build } = require('./build');
+const { deploy } = require('./deploy');
 const { ACTIONS } = require('./enums/actions.enum');
-const { convertParamsTpMap } = require('./utils');
+const { convertParamsToMap } = require('./utils');
 const processArgs = async (type, value) => {
   try {
     // await checkConfig();
 
-    const values = convertParamsTpMap(value);
+    const values = convertParamsToMap(value);
 
     switch (type) {
-      /* case ACTIONS.DEPLOY: {
+      case ACTIONS.DEPLOY: {
         await deploy(values);
 
         break;
-      } */
+      }
 
       case ACTIONS.BUILD: {
         await build(values);
@@ -21,7 +22,8 @@ const processArgs = async (type, value) => {
         break;
       }
 
-      /* case ACTIONS.SIMPLE_DEPLOY: {
+      /* case ACTIONS.BUILD_DEPLOY: {
+        const buildIds = await build(values);
         await simpleDeploy(values);
 
         break;

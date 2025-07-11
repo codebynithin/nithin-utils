@@ -2,7 +2,7 @@ module.exports = {
   ACTIONS: {
     BUILD: 'build',
     DEPLOY: 'deploy',
-    SIMPLE_DEPLOY: 'simple-deploy',
+    BUILD_DEPLOY: 'build-deploy',
     VERSION: 'version',
     HELP: 'help',
     INIT: 'init',

@@ -1,12 +1,8 @@
 const axios = require('axios');
-const { generateBuildConfigs } = require('./utils');
-const build = async (values) => {
-  const { configs } = generateBuildConfigs(values);
+const { generateDeployConfigs } = require('./utils');
+const deploy = async (values) => {
+  const { configs } = generateDeployConfigs(values);
   const buildIds = [];
-
-  if (!configs?.length) {
-    return;
-  }
 
   for (const config of configs) {
     await axios
@@ -19,9 +15,9 @@ const build = async (values) => {
       });
   }
 
-  console.log('Built: ', { buildIds });
+  console.log('Deployed: ', { buildIds });
 
   return buildIds;
 };
 
-module.exports = { build };
+module.exports = { deploy };
