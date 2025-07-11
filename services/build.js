@@ -23,5 +23,28 @@ const build = async (values) => {
 
   return buildIds;
 };
+const buildStatus = async (values) => {
+  const { configs } = generateBuildConfigs(values);
+  const buildIds = [];
 
-module.exports = { build };
+  if (!configs?.length) {
+    return;
+  }
+
+  for (const config of configs) {
+    await axios
+      .request(config)
+      .then((response) => {
+        buildIds.push(response?.data?.id);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  console.log('Built: ', { buildIds });
+
+  return buildIds;
+};
+
+module.exports = { build, buildStatus };

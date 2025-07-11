@@ -55,8 +55,8 @@ const buildHeaders = (url) => ({
   'Sec-Fetch-Site': 'same-origin',
   TE: 'trailers',
 });
-const makeConfig = (url, data) => ({
-  method: 'post',
+const makeConfig = (url, data, method = 'post') => ({
+  method,
   maxBodyLength: Infinity,
   url,
   data: JSON.stringify(data),
@@ -137,7 +137,6 @@ const generateBuildConfigs = (values = {}) => {
 };
 const generateDeployConfigs = (values = {}) => {
   const variables_attributes = [];
-  let configs = {};
 
   if (!values.instance) {
     values.instance = 'dev';
@@ -176,12 +175,42 @@ const generateDeployConfigs = (values = {}) => {
   }
 
   const project = projectMap[values.project] || projectMap.portal;
-
-  // Client config
-  configs = makeConfig(`https://gitlab.4medica.net/cxd/${project}-deployment/-/pipelines`, {
+  const configs = makeConfig(`https://gitlab.4medica.net/cxd/${project}-deployment/-/pipelines`, {
     ref: `refs/heads/${deploymentBranchMap[values.instance]}`,
     variables_attributes,
   });
+
+  return { configs };
+};
+const generateBuildStatusConfigs = (values = {}, buildIds = []) => {
+  const configs = [];
+  const project = projectMap[values.project] || projectMap.portal;
+  const backendComps = ['administration', 'provider', 'rest-api'];
+  let clientBuildId = '';
+  let backendBuildId = '';
+
+  if (values.components.includes('client')) {
+    [clientBuildId, backendBuildId] = buildIds;
+    configs.push(
+      makeConfig(
+        `https://gitlab.4medica.net/cxd/${project}${componentMap.client}/-/pipelines/${clientBuildId}`,
+        null,
+        'get',
+      ),
+    );
+  } else {
+    [backendBuildId] = buildIds;
+  }
+
+  if (backendComps.some((c) => values.components.includes(c))) {
+    configs.push(
+      makeConfig(
+        `https://gitlab.4medica.net/cxd/${project}${componentMap.backend}/-/pipelines/${backendBuildId}`,
+        null,
+        'get',
+      ),
+    );
+  }
 
   return { configs };
 };
@@ -208,4 +237,5 @@ module.exports = {
   convertParamsToMap,
   generateBuildConfigs,
   generateDeployConfigs,
+  generateBuildStatusConfigs,
 };
