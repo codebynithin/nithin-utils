@@ -17,7 +17,7 @@ We are pleased to announce the first official release of **Nithin Utils**.
 
 For a complete list of changes and discussion, see [Issue #1](https://github.com/codebynithin/nithin-utils/issues/1).
 
-## [1.0.1] - 2025-07-12
+## [1.0.2] - 2025-07-12
 
 ### Bug Fixes
 

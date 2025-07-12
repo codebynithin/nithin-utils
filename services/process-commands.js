@@ -54,22 +54,19 @@ const processArgs = async (type, value) => {
       }
 
       case ACTIONS.HELP: {
-        console.log(`usage: nu \t[${ACTIONS.VERSION}] [${ACTIONS.HELP}] [${ACTIONS.INIT}] [${ACTIONS.SWITCH}]
-        \t[${ACTIONS.ADD}] [${ACTIONS.UPDATE}] [${ACTIONS.DELETE}] [${ACTIONS.STATUS}] [${ACTIONS.ENTRIES}] [${ACTIONS.ZOHO}]\n`);
-        console.log(`Below are common Time Entry commands utilized in various scenarios:\n
-Start a time entry:\n
-  ${ACTIONS.INIT} \t\t: Initialize and input necessary information.
-  ${ACTIONS.SWITCH} \t: Switch between the default projects.\n
+        console.log(`usage: nu \t[${ACTIONS.VERSION}] [${ACTIONS.HELP}]
+        \t[${ACTIONS.BUILD}] [${ACTIONS.BUILD_DEPLOY}] [${ACTIONS.DEPLOY}]\n
+Available commands:\n
+  build         : Build specified components
+  deploy        : Deploy specified components
+  build-deploy  : Build and then deploy
+  version       : Show version info
+  help          : Show help
 
-Work on the Current Change:\n
-  ${ACTIONS.ADD} \t\t: Add your time details.
-  ${ACTIONS.UPDATE} \t: Update existing time details.
-  ${ACTIONS.DELETE} \t: Remove existing time details.\n
-
-Examine the History:\n
-  ${ACTIONS.ENTRIES} \t: View each time entry's details by date.
-  ${ACTIONS.STATUS} \t: View daily status of time entries.
-  ${ACTIONS.ZOHO} \t\t: Update time entries remotely.
+Example usage:\n
+  nu build -project <project> -components <components> -instance <instance>
+  nu deploy -project <project> -components <components> -instance <instance>
+  nu build-deploy -project <project> -components <components> -instance <instance>
 
 Running 'nu help' will list available subcommands and provide some conceptual guides.`);
         break;

@@ -5,6 +5,5 @@ module.exports = {
     BUILD_DEPLOY: 'build-deploy',
     VERSION: 'version',
     HELP: 'help',
-    INIT: 'init',
   },
 };
