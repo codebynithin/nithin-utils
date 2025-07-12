@@ -9,13 +9,11 @@ const processArgs = async (type, value) => {
 
     const values = convertParamsToMap(value);
 
+    if (values === null) {
+      return;
+    }
+
     switch (type) {
-      case ACTIONS.DEPLOY: {
-        await deploy(values);
-
-        break;
-      }
-
       case ACTIONS.BUILD: {
         await build(values);
 
@@ -23,8 +21,20 @@ const processArgs = async (type, value) => {
       }
 
       case ACTIONS.BUILD_DEPLOY: {
-        const buildIds = await build(values);
-        await buildStatus(values, buildIds);
+        const configs = await build(values);
+
+        setTimeout(async () => {
+          if (configs.client.buildId || configs.backend.buildId) {
+            await buildStatus(values, configs);
+          }
+
+          await deploy(values);
+        }, 240000);
+
+        break;
+      }
+
+      case ACTIONS.DEPLOY: {
         await deploy(values);
 
         break;

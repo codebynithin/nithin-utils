@@ -14,11 +14,6 @@ const keyMap = {
   branch: 'branch',
   b: 'branch',
 };
-const componentMap = {
-  client: '-client',
-  backend: '-backend',
-  deployment: '-deployment',
-};
 const projectMap = {
   portal: 'medica-portal',
   gateway: 'gateway-app',
@@ -38,6 +33,7 @@ const imageTagMap = {
   qa: 'qa',
   pilot: 'demo',
 };
+const backendComps = ['administration', 'provider', 'rest-api'];
 const buildHeaders = (url) => ({
   'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0',
   Accept: 'application/json, text/plain, */*',
@@ -63,7 +59,16 @@ const makeConfig = (url, data, method = 'post') => ({
   headers: buildHeaders(url),
 });
 const generateBuildConfigs = (values = {}) => {
-  const configs = [];
+  const configs = {
+    client: {
+      config: null,
+      buildId: null,
+    },
+    backend: {
+      config: null,
+      buildId: null,
+    },
+  };
 
   if (!values.components) {
     console.log('Invalid build parameters');
@@ -96,15 +101,13 @@ const generateBuildConfigs = (values = {}) => {
 
   // Client config
   if (values.components.includes('client')) {
-    configs.push(
-      makeConfig(`https://gitlab.4medica.net/cxd/${project}${componentMap.client}/-/pipelines`, {
-        ...dataBase,
-      }),
+    configs.client.config = makeConfig(
+      `https://gitlab.4medica.net/cxd/${project}-client/-/pipelines`,
+      { ...dataBase },
     );
   }
 
   // Backend config (admin, provider, rest-api)
-  const backendComps = ['administration', 'provider', 'rest-api'];
   if (backendComps.some((c) => values.components.includes(c))) {
     const apps = [];
     if (values.components.includes('administration')) apps.push('administration');
@@ -125,15 +128,34 @@ const generateBuildConfigs = (values = {}) => {
           : []),
       ],
     };
-    configs.push(
-      makeConfig(
-        `https://gitlab.4medica.net/cxd/${project}${componentMap.backend}/-/pipelines`,
-        backendData,
-      ),
+    configs.backend.config = makeConfig(
+      `https://gitlab.4medica.net/cxd/${project}-backend/-/pipelines`,
+      backendData,
     );
   }
 
   return { configs };
+};
+const generateBuildStatusConfigs = (values = {}, configs) => {
+  const project = projectMap[values.project] || projectMap.portal;
+
+  if (values.components.includes('client') && configs.client.buildId) {
+    configs.client.statusConfig = makeConfig(
+      `https://gitlab.4medica.net/cxd/${project}-client/-/pipelines/${configs.client.buildId}`,
+      null,
+      'get',
+    );
+  }
+
+  if (backendComps.some((c) => values.components.includes(c)) && configs.backend.buildId) {
+    configs.backend.statusConfig = makeConfig(
+      `https://gitlab.4medica.net/cxd/${project}-backend/-/pipelines/${configs.backend.buildId}`,
+      null,
+      'get',
+    );
+  }
+
+  return configs;
 };
 const generateDeployConfigs = (values = {}) => {
   const variables_attributes = [];
@@ -182,39 +204,13 @@ const generateDeployConfigs = (values = {}) => {
 
   return { configs };
 };
-const generateBuildStatusConfigs = (values = {}, buildIds = []) => {
-  const configs = [];
-  const project = projectMap[values.project] || projectMap.portal;
-  const backendComps = ['administration', 'provider', 'rest-api'];
-  let clientBuildId = '';
-  let backendBuildId = '';
-
-  if (values.components.includes('client')) {
-    [clientBuildId, backendBuildId] = buildIds;
-    configs.push(
-      makeConfig(
-        `https://gitlab.4medica.net/cxd/${project}${componentMap.client}/-/pipelines/${clientBuildId}`,
-        null,
-        'get',
-      ),
-    );
-  } else {
-    [backendBuildId] = buildIds;
-  }
-
-  if (backendComps.some((c) => values.components.includes(c))) {
-    configs.push(
-      makeConfig(
-        `https://gitlab.4medica.net/cxd/${project}${componentMap.backend}/-/pipelines/${backendBuildId}`,
-        null,
-        'get',
-      ),
-    );
-  }
-
-  return { configs };
-};
 const convertParamsToMap = (item) => {
+  if (!(csrfToken || Cookie)) {
+    console.log('Invalid credentials');
+
+    return;
+  }
+
   return item?.split('-')?.reduce((acc, item) => {
     if (!item) {
       return acc;
@@ -233,6 +229,7 @@ const convertParamsToMap = (item) => {
   }, {});
 };
 
+// fatal: unable to access 'https://gitlab.com/nithinv/nithin-utils.git/': Could not resolve host: gitlab.com
 module.exports = {
   convertParamsToMap,
   generateBuildConfigs,
