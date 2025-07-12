@@ -5,7 +5,11 @@ const { ACTIONS } = require('./enums/actions.enum');
 const { convertParamsToMap, wait } = require('./utils');
 const processArgs = async (type, value) => {
   try {
-    const values = await convertParamsToMap(value);
+    let values;
+
+    if (type !== ACTIONS.HELP && type !== ACTIONS.VERSION) {
+      values = await convertParamsToMap(value);
+    }
 
     if (values === null) {
       return;
@@ -24,7 +28,6 @@ const processArgs = async (type, value) => {
         console.log('Build in progress...');
 
         await wait(240000);
-
         await buildStatus(values, configs);
 
         console.log('Deploy in progress...');
