@@ -1,9 +1,11 @@
 const path = require('path');
+const axios = require('axios');
 
 require('dotenv').config({ path: path.resolve(require('os').homedir(), 'Desktop/.env.nu') });
 
 const csrfToken = process.env.CSRF_TOKEN;
 const Cookie = process.env.COOKIE;
+const Origin = process.env.ORIGIN;
 const keyMap = {
   components: 'components',
   c: 'components',
@@ -34,6 +36,7 @@ const imageTagMap = {
   pilot: 'demo',
 };
 const backendComps = ['administration', 'provider', 'rest-api'];
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const buildHeaders = (url) => ({
   'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0',
   Accept: 'application/json, text/plain, */*',
@@ -43,7 +46,7 @@ const buildHeaders = (url) => ({
   'X-CSRF-Token': csrfToken,
   'X-Requested-With': 'XMLHttpRequest',
   'Content-Type': 'application/json',
-  Origin: 'https://gitlab.4medica.net',
+  Origin,
   Connection: 'keep-alive',
   Cookie,
   'Sec-Fetch-Dest': 'empty',
@@ -58,6 +61,29 @@ const makeConfig = (url, data, method = 'post') => ({
   data: JSON.stringify(data),
   headers: buildHeaders(url),
 });
+const removeEmpty = (obj) => {
+  Object.entries(obj).forEach(([key, val]) => {
+    if (val && typeof val === 'object') {
+      removeEmpty(val);
+
+      if (!(Object.keys(val).length || val instanceof Date)) {
+        delete obj[key];
+      }
+    } else {
+      if (typeof val === 'string') {
+        val = val.trim();
+      }
+
+      if (val === null || val === undefined || val === '') {
+        delete obj[key];
+      } else {
+        obj[key] = val;
+      }
+    }
+  });
+
+  return obj;
+};
 const generateBuildConfigs = (values = {}) => {
   const configs = {
     client: {
@@ -73,7 +99,7 @@ const generateBuildConfigs = (values = {}) => {
   if (!values.components) {
     console.log('Invalid build parameters');
 
-    return { configs };
+    return { configs: removeEmpty(configs, true) };
   }
 
   const variables_attributes = [];
@@ -101,10 +127,9 @@ const generateBuildConfigs = (values = {}) => {
 
   // Client config
   if (values.components.includes('client')) {
-    configs.client.config = makeConfig(
-      `https://gitlab.4medica.net/cxd/${project}-client/-/pipelines`,
-      { ...dataBase },
-    );
+    configs.client.config = makeConfig(`${Origin}/cxd/${project}-client/-/pipelines`, {
+      ...dataBase,
+    });
   }
 
   // Backend config (admin, provider, rest-api)
@@ -129,19 +154,19 @@ const generateBuildConfigs = (values = {}) => {
       ],
     };
     configs.backend.config = makeConfig(
-      `https://gitlab.4medica.net/cxd/${project}-backend/-/pipelines`,
+      `${Origin}/cxd/${project}-backend/-/pipelines`,
       backendData,
     );
   }
 
-  return { configs };
+  return { configs: removeEmpty(configs, true) };
 };
 const generateBuildStatusConfigs = (values = {}, configs) => {
   const project = projectMap[values.project] || projectMap.portal;
 
   if (values.components.includes('client') && configs.client.buildId) {
     configs.client.statusConfig = makeConfig(
-      `https://gitlab.4medica.net/cxd/${project}-client/-/pipelines/${configs.client.buildId}`,
+      `${Origin}/cxd/${project}-client/-/pipelines/${configs.client.buildId}`,
       null,
       'get',
     );
@@ -149,13 +174,13 @@ const generateBuildStatusConfigs = (values = {}, configs) => {
 
   if (backendComps.some((c) => values.components.includes(c)) && configs.backend.buildId) {
     configs.backend.statusConfig = makeConfig(
-      `https://gitlab.4medica.net/cxd/${project}-backend/-/pipelines/${configs.backend.buildId}`,
+      `${Origin}/cxd/${project}-backend/-/pipelines/${configs.backend.buildId}`,
       null,
       'get',
     );
   }
 
-  return configs;
+  return removeEmpty(configs, true);
 };
 const generateDeployConfigs = (values = {}) => {
   const variables_attributes = [];
@@ -197,18 +222,36 @@ const generateDeployConfigs = (values = {}) => {
   }
 
   const project = projectMap[values.project] || projectMap.portal;
-  const configs = makeConfig(`https://gitlab.4medica.net/cxd/${project}-deployment/-/pipelines`, {
+  const configs = makeConfig(`${Origin}/cxd/${project}-deployment/-/pipelines`, {
     ref: `refs/heads/${deploymentBranchMap[values.instance]}`,
     variables_attributes,
   });
 
-  return { configs };
+  return { configs: removeEmpty(configs, true) };
 };
-const convertParamsToMap = (item) => {
-  if (!(csrfToken || Cookie)) {
-    console.log('Invalid credentials');
+const convertParamsToMap = async (item) => {
+  let live = false;
 
-    return;
+  if (!(csrfToken || Cookie || Origin)) {
+    console.log('Configurations are missing...!');
+    return null;
+  }
+
+  console.log(`Checking website status...`);
+
+  await axios
+    .get(Origin)
+    .then(() => {
+      live = true;
+
+      console.log(`Website is live.`);
+    })
+    .catch((err) => {
+      console.log(`Website is not reachable:`, err.message);
+    });
+
+  if (!live) {
+    return null;
   }
 
   return item?.split('-')?.reduce((acc, item) => {
@@ -229,10 +272,10 @@ const convertParamsToMap = (item) => {
   }, {});
 };
 
-// fatal: unable to access 'https://gitlab.com/nithinv/nithin-utils.git/': Could not resolve host: gitlab.com
 module.exports = {
   convertParamsToMap,
   generateBuildConfigs,
   generateDeployConfigs,
   generateBuildStatusConfigs,
+  wait,
 };

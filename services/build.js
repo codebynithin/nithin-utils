@@ -1,6 +1,5 @@
 const axios = require('axios');
-const { generateBuildConfigs, generateBuildStatusConfigs } = require('./utils');
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const { generateBuildConfigs, generateBuildStatusConfigs, wait } = require('./utils');
 const build = async (values) => {
   const { configs } = generateBuildConfigs(values);
 
@@ -26,13 +25,13 @@ const build = async (values) => {
 const buildStatus = async (values, configs) => {
   configs = generateBuildStatusConfigs(values, configs);
 
-  for (const [key, { config }] of Object.entries(configs)) {
-    let status = await checkStatus(config);
+  for (const [key, { statusConfig }] of Object.entries(configs)) {
+    let status = await checkStatus(statusConfig);
 
     while (status !== 'passed' && status !== 'failed') {
       await wait(30000);
 
-      status = await checkStatus(config);
+      status = await checkStatus(statusConfig);
     }
 
     configs[key].status = status;
@@ -41,7 +40,7 @@ const buildStatus = async (values, configs) => {
   return configs;
 };
 const checkStatus = async (config) => {
-  await axios
+  return await axios
     .request(config)
     .then((response) => {
       return response?.data?.details?.status?.label;

@@ -2,12 +2,10 @@
 const { build, buildStatus } = require('./build');
 const { deploy } = require('./deploy');
 const { ACTIONS } = require('./enums/actions.enum');
-const { convertParamsToMap } = require('./utils');
+const { convertParamsToMap, wait } = require('./utils');
 const processArgs = async (type, value) => {
   try {
-    // await checkConfig();
-
-    const values = convertParamsToMap(value);
+    const values = await convertParamsToMap(value);
 
     if (values === null) {
       return;
@@ -23,13 +21,15 @@ const processArgs = async (type, value) => {
       case ACTIONS.BUILD_DEPLOY: {
         const configs = await build(values);
 
-        setTimeout(async () => {
-          if (configs.client.buildId || configs.backend.buildId) {
-            await buildStatus(values, configs);
-          }
+        console.log('Build in progress...');
 
-          await deploy(values);
-        }, 240000);
+        await wait(240000);
+
+        await buildStatus(values, configs);
+
+        console.log('Deploy in progress...');
+
+        await deploy(values);
 
         break;
       }
