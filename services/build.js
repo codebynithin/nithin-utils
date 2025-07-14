@@ -3,7 +3,7 @@ const { generateBuildConfigs, generateBuildStatusConfigs, wait } = require('./ut
 const build = async (values) => {
   const { configs } = generateBuildConfigs(values);
 
-  if (!(configs.client.config || configs.backend.config)) {
+  if (!(configs.client?.config || configs.backend?.config)) {
     return;
   }
 
