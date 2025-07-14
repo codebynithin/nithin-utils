@@ -108,7 +108,7 @@ const generateBuildConfigs = (values = {}) => {
     variables_attributes.push({
       variable_type: 'env_var',
       key: 'TAG',
-      secret_value: buildBranchMap[values.instance],
+      secret_value: values.instance,
     });
 
     if (!values.branch) {
@@ -203,7 +203,7 @@ const generateDeployConfigs = (values = {}) => {
     variables_attributes.push({
       variable_type: 'env_var',
       key: 'INSTANCE',
-      secret_value: imageTagMap[values.instance],
+      secret_value: imageTagMap[values.instance] || values.instance,
     });
   }
 
