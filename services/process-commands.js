@@ -30,9 +30,13 @@ const processArgs = async (type, value) => {
         await wait(240000);
         await buildStatus(values, configs);
 
-        console.log('Deploy in progress...');
+        if (Object.values(configs).every(({ status }) => status === 'passed')) {
+          console.log('Deploy in progress...');
 
-        await deploy(values);
+          await deploy(values);
+        } else {
+          console.log('Build failed. Deploy skipped.');
+        }
 
         break;
       }
