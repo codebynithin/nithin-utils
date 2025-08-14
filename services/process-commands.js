@@ -3,12 +3,13 @@ const { build, buildStatus } = require('./build');
 const { deploy } = require('./deploy');
 const { ACTIONS } = require('./enums/actions.enum');
 const { convertParamsToMap, wait } = require('./utils');
+const { createBranch } = require('./create-branch');
 const processArgs = async (type, value) => {
   try {
     let values;
 
     if (type !== ACTIONS.HELP && type !== ACTIONS.VERSION) {
-      values = await convertParamsToMap(value);
+      values = await convertParamsToMap(value, type);
     }
 
     if (values === null) {
@@ -43,6 +44,12 @@ const processArgs = async (type, value) => {
 
       case ACTIONS.DEPLOY: {
         await deploy(values);
+
+        break;
+      }
+
+      case ACTIONS.CREATE_BRANCH: {
+        await createBranch(values);
 
         break;
       }

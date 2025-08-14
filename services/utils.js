@@ -1,5 +1,6 @@
 const path = require('path');
 const axios = require('axios');
+const { ACTIONS } = require('./enums/actions.enum');
 
 require('dotenv').config({ path: path.resolve(require('os').homedir(), 'Desktop/.env.nu') });
 
@@ -15,6 +16,12 @@ const keyMap = {
   i: 'instance',
   branch: 'branch',
   b: 'branch',
+  task: 'task',
+  t: 'task',
+  type: 'type',
+  y: 'type',
+  description: 'description',
+  d: 'description',
 };
 const projectMap = {
   portal: 'medica-portal',
@@ -229,29 +236,33 @@ const generateDeployConfigs = (values = {}) => {
 
   return { configs: removeEmpty(configs, true) };
 };
-const convertParamsToMap = async (item) => {
+const convertParamsToMap = async (item, type) => {
+  const itemsToSkipCheck = [ACTIONS.CREATE_BRANCH];
+  const skipCheck = itemsToSkipCheck.includes(type);
   let live = false;
 
-  if (!(csrfToken || Cookie || Origin)) {
-    console.log('Configurations are missing...!');
-    return null;
-  }
+  if (!skipCheck) {
+    if (!(csrfToken || Cookie || Origin)) {
+      console.log('Configurations are missing...!');
+      return null;
+    }
 
-  console.log(`Checking website status...`);
+    console.log(`Checking website status...`);
 
-  await axios
-    .get(Origin)
-    .then(() => {
-      live = true;
+    await axios
+      .get(Origin)
+      .then(() => {
+        live = true;
 
-      console.log(`Website is live.`);
-    })
-    .catch((err) => {
-      console.log(`Website is not reachable:`, err.message);
-    });
+        console.log(`Website is live.`);
+      })
+      .catch((err) => {
+        console.log(`Website is not reachable:`, err.message);
+      });
 
-  if (!live) {
-    return null;
+    if (!live) {
+      return null;
+    }
   }
 
   return item?.split('-')?.reduce((acc, item) => {
