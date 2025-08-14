@@ -1,7 +1,6 @@
 const { execSync } = require('child_process');
 
 const createBranch = async (values) => {
-  console.log('Creating branch: ', values);
   if (!values.task || !values.type || !values.description) {
     console.log('Invalid branch parameters');
 

@@ -4,6 +4,8 @@ const { deploy } = require('./deploy');
 const { ACTIONS } = require('./enums/actions.enum');
 const { convertParamsToMap, wait } = require('./utils');
 const { createBranch } = require('./create-branch');
+const { portForward } = require('./port-forward');
+
 const processArgs = async (type, value) => {
   try {
     let values;
@@ -54,6 +56,12 @@ const processArgs = async (type, value) => {
         break;
       }
 
+      case ACTIONS.PORT_FORWARD: {
+        await portForward(values);
+
+        break;
+      }
+
       case ACTIONS.VERSION: {
         const path = require('path');
         const packageJson = require(path.resolve(__dirname, '../package.json'));
@@ -71,6 +79,8 @@ Available commands:\n
   build         : Build specified components
   deploy        : Deploy specified components
   build-deploy  : Build and then deploy
+  create-branch : Create git branch
+  port-forward  : Port forward specified merge request
   version       : Show version info
   help          : Show help
 
@@ -78,7 +88,27 @@ Example usage:\n
   nu build -project <project> -components <components> -instance <instance>
   nu deploy -project <project> -components <components> -instance <instance>
   nu build-deploy -project <project> -components <components> -instance <instance>
+  nu create-branch -task <task number> -type <feat|fix> -description <description> -project <project short name>
+  nu port-forward -project <project short name> -mergeId <merge id>
 
+Project short names:
+  portalClient
+  portalBackend
+  portalDeployment
+  portalAutomation
+  gatewayBackend
+  gatewayClient
+  gatewayDeployment
+  phrClient
+  phrBackend
+  phrDeployment
+  configService
+  healthRecords
+  centralAuth
+  mpi
+  phrAdminBackend
+  phrAdminClient
+  terminologyService
 Running 'nu help' will list available subcommands and provide some conceptual guides.`);
         break;
       }

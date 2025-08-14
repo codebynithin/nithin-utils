@@ -7,6 +7,7 @@ require('dotenv').config({ path: path.resolve(require('os').homedir(), 'Desktop/
 const csrfToken = process.env.CSRF_TOKEN;
 const Cookie = process.env.COOKIE;
 const Origin = process.env.ORIGIN;
+const gitlabToken = process.env.GITLAB_TOKEN;
 const keyMap = {
   components: 'components',
   c: 'components',
@@ -22,6 +23,8 @@ const keyMap = {
   y: 'type',
   description: 'description',
   d: 'description',
+  mergeId: 'mergeId',
+  mId: 'mergeId',
 };
 const projectMap = {
   portal: 'medica-portal',
@@ -41,6 +44,25 @@ const deploymentBranchMap = {
 const imageTagMap = {
   qa: 'qa',
   pilot: 'demo',
+};
+const projectIdMap = {
+  portalClient: '162',
+  portalBackend: '163',
+  portalDeployment: '164',
+  portalAutomation: '229',
+  gatewayBackend: '305',
+  gatewayClient: '306',
+  gatewayDeployment: '304',
+  phrClient: '100',
+  phrBackend: '117',
+  phrDeployment: '64',
+  configService: '227',
+  healthRecords: '115',
+  centralAuth: '134',
+  mpi: '10',
+  phrAdminBackend: '126',
+  phrAdminClient: '130',
+  terminologyService: '203',
 };
 const backendComps = ['administration', 'provider', 'rest-api'];
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -242,7 +264,7 @@ const convertParamsToMap = async (item, type) => {
   let live = false;
 
   if (!skipCheck) {
-    if (!(csrfToken || Cookie || Origin)) {
+    if (!(csrfToken || Cookie || Origin || gitlabToken)) {
       console.log('Configurations are missing...!');
       return null;
     }
@@ -289,4 +311,6 @@ module.exports = {
   generateDeployConfigs,
   generateBuildStatusConfigs,
   wait,
+  gitlabToken,
+  projectIdMap,
 };

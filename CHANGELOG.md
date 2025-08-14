@@ -29,4 +29,10 @@ For a complete list of changes and discussion, see [Issue #2](https://github.com
 
 ### Features
 
-- Added support for creating git branches.
+- Added support for creating git branches, see [Issue #3](https://github.com/codebynithin/nithin-utils/issues/3).
+
+## [1.2.0] - 2025-08-15
+
+### Features
+
+- Added support for automating AI port forward, see [Issue #4](https://github.com/codebynithin/nithin-utils/issues/4).

@@ -10,6 +10,7 @@ A CLI utility toolkit for automating and managing build, deploy, and status oper
 - Utility functions for parameter parsing and object cleaning
 - Extensible and scriptable for automation
 - Create git branch
+- Port forward merge request
 
 ## Requirements
 
@@ -19,6 +20,7 @@ A CLI utility toolkit for automating and managing build, deploy, and status oper
   - `CSRF_TOKEN`
   - `COOKIE`
   - `ORIGIN`
+  - `GITLAB_TOKEN`
 
 ## Usage
 
@@ -46,6 +48,10 @@ nu <command> [options]
   ```bash
   nu create-branch -task <task number> -type <feat|fix> -description <description> -project <project short name>
   ```
+- **Port forward:**
+  ```bash
+  nu port-forward -project <project short name> -mergeId <merge id>
+  ```
 
 ### Command Reference
 
@@ -56,6 +62,7 @@ nu <command> [options]
 - `help` : Show help
 - `init` : Initialize configuration
 - `create-branch` : Create git branch
+- `port-forward` : Port forward specified merge request
 
 ### Options
 
@@ -66,6 +73,7 @@ nu <command> [options]
 - `-task` or `-t` : Task number
 - `-type` or `-y` : Type (`feat`, `fix`)
 - `-description` or `-d` : Description
+- `-mergeId` or `-mId` : Merge ID
 
 ## License
 
