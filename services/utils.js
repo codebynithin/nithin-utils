@@ -1,6 +1,6 @@
 const path = require('path');
 const axios = require('axios');
-const { PIPELINE_ACTIONS } = require('./enums/actions.enum');
+const { PIPELINE_ACTIONS } = require('./enums/pipeline-actions.enum');
 
 require('dotenv').config({ path: path.resolve(require('os').homedir(), 'Desktop/.env.nu') });
 
@@ -8,6 +8,8 @@ const csrfToken = process.env.CSRF_TOKEN;
 const Cookie = process.env.COOKIE;
 const Origin = process.env.ORIGIN;
 const gitlabToken = process.env.GITLAB_TOKEN;
+const mrPrompt = process.env.MR_PROMPT;
+const mrLang = process.env.MR_LANG;
 const keyMap = {
   components: 'components',
   c: 'components',
@@ -17,19 +19,30 @@ const keyMap = {
   i: 'instance',
   branch: 'branch',
   b: 'branch',
+  repository: 'repository',
+  r: 'repository',
   task: 'task',
   t: 'task',
   type: 'type',
-  y: 'type',
+  ty: 'type',
   description: 'description',
   d: 'description',
   mergeId: 'mergeId',
   mId: 'mergeId',
+  help: 'help',
+  h: 'help',
 };
 const projectMap = {
   portal: 'medica-portal',
   gateway: 'gateway-app',
   phr: 'phr',
+  configService: 'config-service',
+  healthRecords: 'health-records',
+  centralAuth: 'central-auth',
+  mpi: 'mpi',
+  phrAdminBackend: 'phr-admin-backend',
+  phrAdminClient: 'phr-admin-client',
+  terminologyService: 'terminology-service',
 };
 const buildBranchMap = {
   dev: 'dev-qa-testing',
@@ -313,4 +326,6 @@ module.exports = {
   wait,
   gitlabToken,
   projectIdMap,
+  mrPrompt,
+  mrLang,
 };

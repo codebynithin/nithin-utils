@@ -21,6 +21,8 @@ A CLI utility toolkit for automating and managing build, deploy, and status oper
   - `COOKIE`
   - `ORIGIN`
   - `GITLAB_TOKEN`
+  - `MR_PROMPT`
+  - `MR_LANG`
 
 ## Usage
 
@@ -46,11 +48,11 @@ nu <command> [options]
   ```
 - **Create branch:**
   ```bash
-  nu create-branch -task <task number> -type <feat|fix> -description <description> -project <project short name>
+  nu create-branch -task <task number> -type <feat|fix> -description <description> -repository <repository name>
   ```
 - **Port forward:**
   ```bash
-  nu port-forward -project <project short name> -mergeId <merge id>
+  nu port-forward -project <project short name> -mergeId <merge id> -repository <repository name>
   ```
 
 ### Command Reference
@@ -71,8 +73,9 @@ nu <command> [options]
 - `-instance` or `-i` : Instance/environment (`dev`, `qa`, `pilot`)
 - `-branch` or `-b` : Git branch (optional)
 - `-task` or `-t` : Task number
-- `-type` or `-y` : Type (`feat`, `fix`)
+- `-type` or `-ty` : Type (`feat`, `fix`)
 - `-description` or `-d` : Description
+- `-repository` or `-r` : Repository name
 - `-mergeId` or `-mId` : Merge ID
 
 ## License

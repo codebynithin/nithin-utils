@@ -6,6 +6,6 @@ module.exports = {
     VERSION: 'version',
     HELP: 'help',
     CREATE_BRANCH: 'create-branch',
-    PORT_FORWARD: 'port-forward',
+    REVIEW: 'review',
   },
 };
