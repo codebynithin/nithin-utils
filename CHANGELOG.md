@@ -24,3 +24,9 @@ For a complete list of changes and discussion, see [Issue #1](https://github.com
 - Website liveness checks are now bypassed when executing the `nu help` or `nu version` commands, ensuring faster and uninterrupted access to help and version information.
 
 For a complete list of changes and discussion, see [Issue #2](https://github.com/codebynithin/nithin-utils/issues/2).
+
+## [1.1.0] - 2025-08-14
+
+### Features
+
+- Added support for creating git branches.

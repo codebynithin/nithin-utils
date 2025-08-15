@@ -9,6 +9,7 @@ A CLI utility toolkit for automating and managing build, deploy, and status oper
 - Environment configuration via `.env.nu`
 - Utility functions for parameter parsing and object cleaning
 - Extensible and scriptable for automation
+- Create git branch
 
 ## Requirements
 
@@ -41,6 +42,10 @@ nu <command> [options]
   ```bash
   nu build-deploy -project <project name> -components <component name> -instance <instance name>
   ```
+- **Create branch:**
+  ```bash
+  nu create-branch -task <task number> -type <feat|fix> -description <description> -project <project short name>
+  ```
 
 ### Command Reference
 
@@ -50,6 +55,7 @@ nu <command> [options]
 - `version` : Show version info
 - `help` : Show help
 - `init` : Initialize configuration
+- `create-branch` : Create git branch
 
 ### Options
 
@@ -57,6 +63,9 @@ nu <command> [options]
 - `-components` or `-c` : Components (`client`, `backend`, etc.)
 - `-instance` or `-i` : Instance/environment (`dev`, `qa`, `pilot`)
 - `-branch` or `-b` : Git branch (optional)
+- `-task` or `-t` : Task number
+- `-type` or `-y` : Type (`feat`, `fix`)
+- `-description` or `-d` : Description
 
 ## License
 

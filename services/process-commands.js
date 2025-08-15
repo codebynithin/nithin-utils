@@ -3,12 +3,13 @@ const { build, buildStatus } = require('./build');
 const { deploy } = require('./deploy');
 const { PIPELINE_ACTIONS } = require('./enums/pipeline-actions.enum');
 const { convertParamsToMap, wait } = require('./utils');
+const { createBranch } = require('./create-branch');
 const processArgs = async (type, value) => {
   try {
     let values;
 
     if (type !== PIPELINE_ACTIONS.HELP && type !== PIPELINE_ACTIONS.VERSION) {
-      values = await convertParamsToMap(value);
+      values = await convertParamsToMap(value, type);
     }
 
     if (values === null) {
@@ -43,6 +44,12 @@ const processArgs = async (type, value) => {
 
       case PIPELINE_ACTIONS.DEPLOY: {
         await deploy(values);
+
+        break;
+      }
+
+      case PIPELINE_ACTIONS.CREATE_BRANCH: {
+        await createBranch(values);
 
         break;
       }
