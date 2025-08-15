@@ -1,6 +1,6 @@
 const path = require('path');
 const axios = require('axios');
-const { ACTIONS } = require('./enums/actions.enum');
+const { PIPELINE_ACTIONS } = require('./enums/actions.enum');
 
 require('dotenv').config({ path: path.resolve(require('os').homedir(), 'Desktop/.env.nu') });
 
@@ -259,7 +259,7 @@ const generateDeployConfigs = (values = {}) => {
   return { configs: removeEmpty(configs, true) };
 };
 const convertParamsToMap = async (item, type) => {
-  const itemsToSkipCheck = [ACTIONS.CREATE_BRANCH];
+  const itemsToSkipCheck = [PIPELINE_ACTIONS.CREATE_BRANCH];
   const skipCheck = itemsToSkipCheck.includes(type);
   let live = false;
 

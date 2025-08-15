@@ -2,14 +2,14 @@
   "name": "@codebynithin/nithin-utils",
   "version": "1.1.0",
   "description": "Nithin utilities cli",
-  "main": "index.js",
+  "main": "pipeline.js",
   "author": "Nithin V <mails2nithin@gmail.com>",
   "bin": {
-    "nu": "index.js"
+    "nu": "pipeline.js"
   },
   "scripts": {
-    "start": "node index",
-    "start:dev": "nodemon index",
+    "start": "node pipeline",
+    "start:dev": "nodemon pipeline",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint \"services/*.js\" --fix",
     "prettier": "prettier \"services/*.js\" --write",
