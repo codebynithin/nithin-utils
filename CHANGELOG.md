@@ -36,3 +36,9 @@ For a complete list of changes and discussion, see [Issue #2](https://github.com
 ### Features
 
 - Added support for automating AI port forward, see [Issue #4](https://github.com/codebynithin/nithin-utils/issues/4).
+
+## [1.2.1] - 2025-08-25
+
+### Bug Fixes
+
+- Fixed port forward review url, see [Issue #5](https://github.com/codebynithin/nithin-utils/issues/5).
