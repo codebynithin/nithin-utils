@@ -1,11 +1,11 @@
-const { gitlabToken, projectIdMap, mrPrompt, mrLang } = require('./utils');
+const { gitlabToken, projectIdMap, mrPrompt, mrLang, mrApiUri } = require('./utils');
 const axios = require('axios');
 
 const executeMergeRequestReview = async (values) => {
   const config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: `https://ai-review.4medica.io/api/merge-request/review/projectid/${projectIdMap[values.project]}/mergeid/${values.mergeId}`,
+    url: `${mrApiUri}/${projectIdMap[values.project]}/mergeid/${values.mergeId}`,
     headers: { 'Content-Type': 'application/json' },
     data: JSON.stringify({
       language: mrLang,

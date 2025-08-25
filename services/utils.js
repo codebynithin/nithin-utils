@@ -10,6 +10,7 @@ const Origin = process.env.ORIGIN;
 const gitlabToken = process.env.GITLAB_TOKEN;
 const mrPrompt = process.env.MR_PROMPT;
 const mrLang = process.env.MR_LANG;
+const mrApiUri = process.env.MR_API_URI;
 const keyMap = {
   components: 'components',
   c: 'components',
@@ -328,4 +329,5 @@ module.exports = {
   projectIdMap,
   mrPrompt,
   mrLang,
+  mrApiUri,
 };
