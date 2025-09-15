@@ -1,6 +1,6 @@
 {
   "name": "@codebynithin/nithin-utils",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Nithin utilities cli",
   "main": "pipeline.js",
   "author": "Nithin V <mails2nithin@gmail.com>",

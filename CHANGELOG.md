@@ -42,3 +42,13 @@ For a complete list of changes and discussion, see [Issue #2](https://github.com
 ### Bug Fixes
 
 - Fixed port forward review url, see [Issue #5](https://github.com/codebynithin/nithin-utils/issues/5).
+
+## [1.2.2] - 2025-09-15
+
+### Features
+
+- Added support for automating build, see [Issue #6](https://github.com/codebynithin/nithin-utils/issues/6).
+
+### Bug Fixes
+
+- Fixed build branch, see [Issue #7](https://github.com/codebynithin/nithin-utils/issues/7).
