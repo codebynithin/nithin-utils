@@ -33,6 +33,7 @@ A CLI utility toolkit for automating and managing build, deploy, and status oper
   - `GITLAB_TOKEN`
   - `MR_PROMPT`
   - `MR_LANG`
+  - `OPENAI_API_KEY`
 
 ## Usage
 
