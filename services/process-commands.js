@@ -1,22 +1,27 @@
 // const { checkConfig } = require('./init-config');
 const { build, buildStatus } = require('./build');
 const { deploy } = require('./deploy');
-const { PIPELINE_ACTIONS } = require('./enums/pipeline-actions.enum');
+const { ACTIONS } = require('./enums/actions.enum');
 const { convertParamsToMap, wait } = require('./utils');
 const { createBranch } = require('./create-branch');
-const { mrAIReview } = require('./port-forward');
+const { mrAIReview } = require('./review');
+const { refactor } = require('./refactor');
 
 const processArgs = async (type, value) => {
   try {
     let values;
 
     if (
-      type !== PIPELINE_ACTIONS.HELP &&
-      type !== PIPELINE_ACTIONS.VERSION &&
+      type !== ACTIONS.HELP &&
+      type !== ACTIONS.VERSION &&
       !value.includes('--h') &&
       !value.includes('-help')
     ) {
       values = await convertParamsToMap(value, type);
+    }
+
+    if (type === ACTIONS.REFACTOR) {
+      values = value;
     }
 
     if (values === null) {
@@ -24,7 +29,7 @@ const processArgs = async (type, value) => {
     }
 
     switch (type) {
-      case PIPELINE_ACTIONS.BUILD: {
+      case ACTIONS.BUILD: {
         if (value === '-help' || value === '--h') {
           console.log(`usage: \tnu build [-project <project name>] [-components <component name>] [-instance <instance name>]
 \tnu build [-p <project name>] [-c <component name>] [-i <instance name>]
@@ -44,7 +49,7 @@ Options:
         break;
       }
 
-      case PIPELINE_ACTIONS.BUILD_DEPLOY: {
+      case ACTIONS.BUILD_DEPLOY: {
         if (value === '-help' || value === '--h') {
           console.log(`usage: \tnu build-deploy [-project <project name>] [-components <component name>] [-instance <instance name>]
 \tnu build-deploy [-p <project name>] [-c <component name>] [-i <instance name>]
@@ -77,7 +82,7 @@ Options:
         break;
       }
 
-      case PIPELINE_ACTIONS.DEPLOY: {
+      case ACTIONS.DEPLOY: {
         if (value === '-help' || value === '--h') {
           console.log(`usage: \tnu deploy [-project <project name>] [-components <component name>] [-instance <instance name>]
 \tnu deploy [-p <project name>] [-c <component name>] [-i <instance name>]
@@ -97,7 +102,7 @@ Options:
         break;
       }
 
-      case PIPELINE_ACTIONS.CREATE_BRANCH: {
+      case ACTIONS.CREATE_BRANCH: {
         if (value === '-help' || value === '--h') {
           console.log(`usage: \tnu create-branch [-task <task number>] [-type <feat|fix>] [-description <description>] [-project <project short name>]
 \tnu create-branch [-t <task number>] [-ty <feat|fix>] [-d <description>] [-p <project short name>]
@@ -118,7 +123,7 @@ Options:
         break;
       }
 
-      case PIPELINE_ACTIONS.REVIEW: {
+      case ACTIONS.REVIEW: {
         if (value === '-help' || value === '--h') {
           console.log(`usage: \tnu review [-project <project short name>] [-mergeId <merge id>]
 \tnu review [-p <project short name>] [-mId <merge id>]
@@ -157,7 +162,21 @@ Repository list:
         break;
       }
 
-      case PIPELINE_ACTIONS.VERSION: {
+      case ACTIONS.REFACTOR: {
+        if (value === '-help' || value === '--h') {
+          console.log(`Usage: \tnu refactor <text>
+
+Enhance the provided text for improved clarity, conciseness, and professional quality.`);
+
+          return;
+        }
+
+        await refactor(values);
+
+        break;
+      }
+
+      case ACTIONS.VERSION: {
         const path = require('path');
         const packageJson = require(path.resolve(__dirname, '../package.json'));
         const packageVersion = packageJson.version;
@@ -167,10 +186,10 @@ Repository list:
         break;
       }
 
-      case PIPELINE_ACTIONS.HELP: {
-        console.log(`usage: nu \t[${PIPELINE_ACTIONS.VERSION}] [${PIPELINE_ACTIONS.HELP}]
-        \t[${PIPELINE_ACTIONS.BUILD}] [${PIPELINE_ACTIONS.DEPLOY}] [${PIPELINE_ACTIONS.BUILD_DEPLOY}]
-        \t[${PIPELINE_ACTIONS.CREATE_BRANCH}] [${PIPELINE_ACTIONS.REVIEW}]\n
+      case ACTIONS.HELP: {
+        console.log(`usage: nu \t[${ACTIONS.VERSION}] [${ACTIONS.HELP}]
+        \t[${ACTIONS.BUILD}] [${ACTIONS.DEPLOY}] [${ACTIONS.BUILD_DEPLOY}]
+        \t[${ACTIONS.CREATE_BRANCH}] [${ACTIONS.REVIEW}]\n
 Available commands:\n
   build         : Build specified components
   deploy        : Deploy specified components

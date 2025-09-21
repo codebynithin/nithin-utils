@@ -1,16 +1,26 @@
 # @codebynithin/nithin-utils
 
-A CLI utility toolkit for automating and managing build, deploy, and status operations for Medica projects (portal, gateway, phr) and related components.
+<a name="readme-top"></a>
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/codebynithin/time-entry">
+    <img src="./favicon.png" alt="Logo" width="80" height="80">
+  </a>
+</div>
+
+A CLI utility toolkit for automating and managing build, deploy, and status operations for projects, AI code review, AI text refactor and related components.
 
 ## Features
 
-- Build and deploy project components (client/backend)
+- Build and deploy Gitlab project
 - Check build and deployment status
-- Environment configuration via `.env.nu`
 - Utility functions for parameter parsing and object cleaning
 - Extensible and scriptable for automation
 - Create git branch
-- Port forward merge request
+- AI Review merge request
+- AI text refactoring
 
 ## Requirements
 
@@ -50,9 +60,13 @@ nu <command> [options]
   ```bash
   nu create-branch -task <task number> -type <feat|fix> -description <description> -repository <repository name>
   ```
-- **Port forward:**
+- **Review:**
   ```bash
-  nu port-forward -project <project short name> -mergeId <merge id> -repository <repository name>
+  nu review -project <project short name> -mergeId <merge id> -repository <repository name>
+  ```
+- **Refactor Text:**
+  ```bash
+  nu refactor <text>
   ```
 
 ### Command Reference
@@ -64,7 +78,7 @@ nu <command> [options]
 - `help` : Show help
 - `init` : Initialize configuration
 - `create-branch` : Create git branch
-- `port-forward` : Port forward specified merge request
+- `review` : AI review specified merge request
 
 ### Options
 

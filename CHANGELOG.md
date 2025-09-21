@@ -35,20 +35,26 @@ For a complete list of changes and discussion, see [Issue #2](https://github.com
 
 ### Features
 
-- Added support for automating AI port forward, see [Issue #4](https://github.com/codebynithin/nithin-utils/issues/4).
+- Added support for automating AI Review, see [Issue #4](https://github.com/codebynithin/nithin-utils/issues/4).
 
 ## [1.2.1] - 2025-08-25
 
 ### Bug Fixes
 
-- Fixed port forward review url, see [Issue #5](https://github.com/codebynithin/nithin-utils/issues/5).
+- Fixed Review review url, see [Issue #6](https://github.com/codebynithin/nithin-utils/issues/6).
 
 ## [1.2.2] - 2025-09-15
 
 ### Features
 
-- Added support for automating build, see [Issue #6](https://github.com/codebynithin/nithin-utils/issues/6).
+- Added support for automating build, see [Issue #7](https://github.com/codebynithin/nithin-utils/issues/7).
 
 ### Bug Fixes
 
-- Fixed build branch, see [Issue #7](https://github.com/codebynithin/nithin-utils/issues/7).
+- Fixed build branch, see [Issue #8](https://github.com/codebynithin/nithin-utils/issues/8).
+
+## [1.3.0] - 2025-09-21
+
+### Features
+
+- Added support for automating build, see [Issue #9](https://github.com/codebynithin/nithin-utils/issues9).

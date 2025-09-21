@@ -1,6 +1,6 @@
 const path = require('path');
 const axios = require('axios');
-const { PIPELINE_ACTIONS } = require('./enums/pipeline-actions.enum');
+const { ACTIONS } = require('./enums/actions.enum');
 
 require('dotenv').config({ path: path.resolve(require('os').homedir(), 'Desktop/.env.nu') });
 
@@ -11,6 +11,7 @@ const gitlabToken = process.env.GITLAB_TOKEN;
 const mrPrompt = process.env.MR_PROMPT;
 const mrLang = process.env.MR_LANG;
 const mrApiUri = process.env.MR_API_URI;
+const openAIKey = process.env.OPENAI_API_KEY;
 const keyMap = {
   components: 'components',
   c: 'components',
@@ -273,7 +274,7 @@ const generateDeployConfigs = (values = {}) => {
   return { configs: removeEmpty(configs, true) };
 };
 const convertParamsToMap = async (item, type) => {
-  const itemsToSkipCheck = [PIPELINE_ACTIONS.CREATE_BRANCH];
+  const itemsToSkipCheck = [ACTIONS.CREATE_BRANCH, ACTIONS.HELP, ACTIONS.VERSION, ACTIONS.REFACTOR];
   const skipCheck = itemsToSkipCheck.includes(type);
   let live = false;
 
@@ -330,4 +331,5 @@ module.exports = {
   mrPrompt,
   mrLang,
   mrApiUri,
+  openAIKey,
 };

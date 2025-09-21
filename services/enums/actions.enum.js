@@ -1,5 +1,5 @@
 module.exports = {
-  PIPELINE_ACTIONS: {
+  ACTIONS: {
     BUILD: 'build',
     DEPLOY: 'deploy',
     BUILD_DEPLOY: 'build-deploy',
@@ -7,5 +7,6 @@ module.exports = {
     HELP: 'help',
     CREATE_BRANCH: 'create-branch',
     REVIEW: 'review',
+    REFACTOR: 'refactor',
   },
 };
