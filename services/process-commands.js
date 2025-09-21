@@ -195,7 +195,8 @@ Available commands:\n
   deploy        : Deploy specified components
   build-deploy  : Build and then deploy
   create-branch : Create git branch
-  review        : Review specified merge request
+  review        : AI Review specified merge request
+  refactor      : REFACTOR the provided text for improved clarity, conciseness, and professional quality.
   version       : Show version info
   help          : Show help
 
