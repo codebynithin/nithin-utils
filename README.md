@@ -33,7 +33,8 @@ A CLI utility toolkit for automating and managing build, deploy, and status oper
   - `GITLAB_TOKEN`
   - `MR_PROMPT`
   - `MR_LANG`
-  - `OPENAI_API_KEY`
+  - `AI_API_KEY`
+  - `AI_MODEL`
 
 ## Usage
 
@@ -80,6 +81,7 @@ nu <command> [options]
 - `init` : Initialize configuration
 - `create-branch` : Create git branch
 - `review` : AI review specified merge request
+- `refactor` : AI refactor specified text
 
 ### Options
 

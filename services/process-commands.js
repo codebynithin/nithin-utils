@@ -208,6 +208,7 @@ Example usage:\n
   nu build-deploy -project <project> -components <components> -instance <instance>
   nu create-branch -task <task number> -type <feat|fix> -description <description> -project <project short name>
   nu review -project <project short name> -mergeId <merge id> -repository <repository name>
+  nu refactor <text>
 
 Running 'nu help' will list available subcommands and provide some conceptual guides.`);
         break;

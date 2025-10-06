@@ -11,7 +11,8 @@ const gitlabToken = process.env.GITLAB_TOKEN;
 const mrPrompt = process.env.MR_PROMPT;
 const mrLang = process.env.MR_LANG;
 const mrApiUri = process.env.MR_API_URI;
-const openAIKey = process.env.OPENAI_API_KEY;
+const openAIKey = process.env.AI_API_KEY;
+const openAIModel = process.env.AI_MODEL;
 const keyMap = {
   components: 'components',
   c: 'components',
@@ -332,4 +333,5 @@ module.exports = {
   mrLang,
   mrApiUri,
   openAIKey,
+  openAIModel,
 };

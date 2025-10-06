@@ -1,11 +1,11 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { openAIKey } = require('./utils.js');
+const { openAIKey, openAIModel } = require('./utils.js');
 const chalk = require('chalk');
 
 const refactorText = async function (text) {
   try {
     const genAI = new GoogleGenerativeAI(openAIKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: openAIModel });
     const prompt = `
   Refactor this text into a professional version.
   Provide exactly 3 different suggestions.
