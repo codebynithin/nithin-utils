@@ -6,6 +6,7 @@ const { convertParamsToMap, wait } = require('./utils');
 const { createBranch } = require('./create-branch');
 const { mrAIReview } = require('./review');
 const { refactor } = require('./refactor');
+const { backup } = require('./mongodb-backup');
 
 const processArgs = async (type, value) => {
   try {
@@ -172,6 +173,26 @@ Enhance the provided text for improved clarity, conciseness, and professional qu
         }
 
         await refactor(values);
+
+        break;
+      }
+
+      case ACTIONS.BACKUP: {
+        if (value === '-help' || value === '--h') {
+          console.log(`Usage: \tnu backup [-project <project name>] [-components <component name>]
+
+Backup mongodb for specified project and components.
+
+project list:
+  - configCervice
+  - medicaCentralAuth
+  - medicaPortal
+  - phr`);
+
+          return;
+        }
+
+        await backup(values);
 
         break;
       }

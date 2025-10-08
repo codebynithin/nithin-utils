@@ -21,6 +21,7 @@ A CLI utility toolkit for automating and managing build, deploy, and status oper
 - Create git branch
 - AI Review merge request
 - AI text refactoring
+- Backup and restore MongoDB
 
 ## Requirements
 
@@ -35,6 +36,8 @@ A CLI utility toolkit for automating and managing build, deploy, and status oper
   - `MR_LANG`
   - `AI_API_KEY`
   - `AI_MODEL`
+  - `BACKUP_CONFIG`
+  - `RESTORE_CONFIG`
 
 ## Usage
 
@@ -70,6 +73,14 @@ nu <command> [options]
   ```bash
   nu refactor <text>
   ```
+- **Backup:**
+  ```bash
+  nu backup <text>
+  ```
+- **Restore:**
+  ```bash
+  nu restore <text>
+  ```
 
 ### Command Reference
 
@@ -82,6 +93,8 @@ nu <command> [options]
 - `create-branch` : Create git branch
 - `review` : AI review specified merge request
 - `refactor` : AI refactor specified text
+- `backup` : Backup specified projects
+- `restore` : Restore specified projects
 
 ### Options
 

@@ -57,4 +57,10 @@ For a complete list of changes and discussion, see [Issue #2](https://github.com
 
 ### Features
 
-- Added support for automating build, see [Issue #9](https://github.com/codebynithin/nithin-utils/issues9).
+- Added support for automating build, see [Issue #9](https://github.com/codebynithin/nithin-utils/issues/9).
+
+## [1.4.0] - 2025-10-10
+
+### Features
+
+- Added support for automating backup, see [Issue #12](https://github.com/codebynithin/nithin-utils/issues/12).

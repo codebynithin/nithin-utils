@@ -8,5 +8,6 @@ module.exports = {
     CREATE_BRANCH: 'create-branch',
     REVIEW: 'review',
     REFACTOR: 'refactor',
+    BACKUP: 'backup',
   },
 };

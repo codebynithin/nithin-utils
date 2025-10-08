@@ -13,6 +13,8 @@ const mrLang = process.env.MR_LANG;
 const mrApiUri = process.env.MR_API_URI;
 const openAIKey = process.env.AI_API_KEY;
 const openAIModel = process.env.AI_MODEL;
+const backupConfig = process.env.BACKUP_CONFIG && JSON.parse(process.env.BACKUP_CONFIG);
+const restoreConfig = process.env.RESTORE_CONFIG && JSON.parse(process.env.RESTORE_CONFIG);
 const keyMap = {
   components: 'components',
   c: 'components',
@@ -275,7 +277,13 @@ const generateDeployConfigs = (values = {}) => {
   return { configs: removeEmpty(configs, true) };
 };
 const convertParamsToMap = async (item, type) => {
-  const itemsToSkipCheck = [ACTIONS.CREATE_BRANCH, ACTIONS.HELP, ACTIONS.VERSION, ACTIONS.REFACTOR];
+  const itemsToSkipCheck = [
+    ACTIONS.CREATE_BRANCH,
+    ACTIONS.HELP,
+    ACTIONS.VERSION,
+    ACTIONS.REFACTOR,
+    ACTIONS.BACKUP,
+  ];
   const skipCheck = itemsToSkipCheck.includes(type);
   let live = false;
 
@@ -303,7 +311,7 @@ const convertParamsToMap = async (item, type) => {
     }
   }
 
-  return item?.split('-')?.reduce((acc, item) => {
+  return item?.split(' -')?.reduce((acc, item) => {
     if (!item) {
       return acc;
     }
@@ -334,4 +342,6 @@ module.exports = {
   mrApiUri,
   openAIKey,
   openAIModel,
+  backupConfig,
+  restoreConfig,
 };
