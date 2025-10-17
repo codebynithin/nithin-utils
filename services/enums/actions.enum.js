@@ -9,5 +9,6 @@ module.exports = {
     REVIEW: 'review',
     REFACTOR: 'refactor',
     BACKUP: 'backup',
+    MERGE: 'merge',
   },
 };

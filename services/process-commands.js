@@ -7,6 +7,7 @@ const { createBranch } = require('./create-branch');
 const { mrAIReview } = require('./review');
 const { refactor } = require('./refactor');
 const { backup } = require('./mongodb-backup');
+const { merge } = require('./merge');
 
 const processArgs = async (type, value) => {
   try {
@@ -197,6 +198,32 @@ project list:
         break;
       }
 
+      case ACTIONS.MERGE: {
+        if (value === '-help' || value === '--h') {
+          console.log(`usage: \tnu merge [-source <source branch>] [-target <target branch>]
+\tnu merge [-s <source branch>] [-ta <target branch>]
+
+Merge source branch into target branch
+
+Options:
+  -s, --source <branch>  source branch name
+  -ta, --target <branch>  target branch name
+
+This command will:
+  1. Pull latest changes
+  2. Checkout source branch and pull
+  3. Checkout target branch and pull
+  4. Merge source into target
+  5. Push changes`);
+
+          return;
+        }
+
+        await merge(values);
+
+        break;
+      }
+
       case ACTIONS.VERSION: {
         const path = require('path');
         const packageJson = require(path.resolve(__dirname, '../package.json'));
@@ -210,7 +237,7 @@ project list:
       case ACTIONS.HELP: {
         console.log(`usage: nu \t[${ACTIONS.VERSION}] [${ACTIONS.HELP}]
         \t[${ACTIONS.BUILD}] [${ACTIONS.DEPLOY}] [${ACTIONS.BUILD_DEPLOY}]
-        \t[${ACTIONS.CREATE_BRANCH}] [${ACTIONS.REVIEW}]\n
+        \t[${ACTIONS.CREATE_BRANCH}] [${ACTIONS.REVIEW}] [${ACTIONS.MERGE}]\n
 Available commands:\n
   build         : Build specified components
   deploy        : Deploy specified components
@@ -218,6 +245,7 @@ Available commands:\n
   create-branch : Create git branch
   review        : AI Review specified merge request
   refactor      : REFACTOR the provided text for improved clarity, conciseness, and professional quality.
+  merge         : Merge source branch into target branch
   version       : Show version info
   help          : Show help
 
@@ -230,6 +258,7 @@ Example usage:\n
   nu create-branch -task <task number> -type <feat|fix> -description <description> -project <project short name>
   nu review -project <project short name> -mergeId <merge id> -repository <repository name>
   nu refactor <text>
+  nu merge -source <source branch> -target <target branch>
 
 Running 'nu help' will list available subcommands and provide some conceptual guides.`);
         break;

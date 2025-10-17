@@ -22,6 +22,7 @@ A CLI utility toolkit for automating and managing build, deploy, and status oper
 - AI Review merge request
 - AI text refactoring
 - Backup and restore MongoDB
+- Merge git branches
 
 ## Requirements
 
@@ -81,6 +82,10 @@ nu <command> [options]
   ```bash
   nu restore <text>
   ```
+- **Merge:**
+  ```bash
+  nu merge -source <source branch> -target <target branch>
+  ```
 
 ### Command Reference
 
@@ -95,6 +100,7 @@ nu <command> [options]
 - `refactor` : AI refactor specified text
 - `backup` : Backup specified projects
 - `restore` : Restore specified projects
+- `merge` : Merge source branch into target branch
 
 ### Options
 
@@ -107,6 +113,8 @@ nu <command> [options]
 - `-description` or `-d` : Description
 - `-repository` or `-r` : Repository name
 - `-mergeId` or `-mId` : Merge ID
+- `-source` or `-so` : Source branch name
+- `-target` or `-ta` : Target branch name
 
 ## License
 

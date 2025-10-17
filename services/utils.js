@@ -36,6 +36,10 @@ const keyMap = {
   mId: 'mergeId',
   help: 'help',
   h: 'help',
+  source: 'source',
+  so: 'source',
+  target: 'target',
+  ta: 'target',
 };
 const projectMap = {
   portal: 'medica-portal',
@@ -290,6 +294,7 @@ const convertParamsToMap = async (item, type) => {
     ACTIONS.VERSION,
     ACTIONS.REFACTOR,
     ACTIONS.BACKUP,
+    ACTIONS.MERGE,
     ACTIONS.BUILD, // to be removed
   ];
   const skipCheck = itemsToSkipCheck.includes(type);
