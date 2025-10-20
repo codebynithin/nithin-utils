@@ -350,6 +350,10 @@ const toCamelCase = (words) => {
   );
 };
 const getPipelineVariables = (values) => {
+  if (!values.instance) {
+    values.instance = 'dev';
+  }
+
   const variables = {};
   const configMap = values.components.split(' ').reduce((acc, comp) => {
     if (values.instance !== 'dev') {
