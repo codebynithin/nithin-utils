@@ -6,7 +6,6 @@ require('dotenv').config({ path: path.resolve(require('os').homedir(), 'Desktop/
 
 const csrfToken = process.env.CSRF_TOKEN;
 const Cookie = process.env.COOKIE;
-const gitlabUri = process.env.GITLAB_URI;
 const Origin = process.env.ORIGIN;
 const gitlabToken = process.env.GITLAB_TOKEN;
 const mrPrompt = process.env.MR_PROMPT;
@@ -206,7 +205,7 @@ const generateBuildConfigs = (values = {}) => {
       ],
     };
     configs.backend.config = makeConfig(
-      `${gitlabUri}/cxd/${project}-backend/-/pipelines`,
+      `${Origin}/cxd/${project}-backend/-/pipelines`,
       backendData,
     );
   }
@@ -226,7 +225,7 @@ const generateBuildStatusConfigs = (values = {}, configs) => {
 
   if (backendComps.some((c) => values.components.includes(c)) && configs.backend.buildId) {
     configs.backend.statusConfig = makeConfig(
-      `${gitlabUri}/cxd/${project}-backend/-/pipelines/${configs.backend.buildId}`,
+      `${Origin}/cxd/${project}-backend/-/pipelines/${configs.backend.buildId}`,
       null,
       'get',
     );
@@ -274,7 +273,7 @@ const generateDeployConfigs = (values = {}) => {
   }
 
   const project = projectMap[values.project] || projectMap.portal;
-  const configs = makeConfig(`${gitlabUri}/cxd/${project}-deployment/-/pipelines`, {
+  const configs = makeConfig(`${Origin}/cxd/${project}-deployment/-/pipelines`, {
     ref: `refs/heads/${deploymentBranchMap[values.instance]}`,
     variables_attributes,
   });
@@ -294,7 +293,7 @@ const convertParamsToMap = async (item, type) => {
   let live = false;
 
   if (!skipCheck) {
-    if (!(csrfToken || Cookie || gitlabUri || gitlabToken)) {
+    if (!(csrfToken || Cookie || Origin || gitlabToken)) {
       console.log('Configurations are missing...!');
       return null;
     }
@@ -302,7 +301,7 @@ const convertParamsToMap = async (item, type) => {
     console.log(`Checking website status...`);
 
     await axios
-      .get(gitlabUri)
+      .get(Origin)
       .then(() => {
         live = true;
 
