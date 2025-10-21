@@ -1,12 +1,8 @@
 const axios = require('axios');
-const {
-  generateBuildConfigs,
-  generateBuildStatusConfigs,
-  wait,
-  getPipelineVariables,
-} = require('./utils');
+const { generateBuildConfigs, generateBuildStatusConfigs, wait } = require('./utils');
+
 const build = async (values) => {
-  /* const { configs } = generateBuildConfigs(values);
+  const { configs } = generateBuildConfigs(values);
 
   if (!(configs.client?.config || configs.backend?.config)) {
     return;
@@ -25,10 +21,7 @@ const build = async (values) => {
 
   console.log('Built: ', { buildIds: Object.values(configs).map((c) => c.buildId) });
 
-  return configs; */
-  const { configMap } = getPipelineVariables(values);
-
-  console.log(configMap);
+  return configs;
 };
 const buildStatus = async (values, configs) => {
   configs = generateBuildStatusConfigs(values, configs);

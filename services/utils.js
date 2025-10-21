@@ -7,6 +7,7 @@ require('dotenv').config({ path: path.resolve(require('os').homedir(), 'Desktop/
 const csrfToken = process.env.CSRF_TOKEN;
 const Cookie = process.env.COOKIE;
 const gitlabUri = process.env.GITLAB_URI;
+const Origin = process.env.ORIGIN;
 const gitlabToken = process.env.GITLAB_TOKEN;
 const mrPrompt = process.env.MR_PROMPT;
 const mrLang = process.env.MR_LANG;
@@ -87,13 +88,6 @@ const projectIdMap = {
   terminologyService: '203',
 };
 const backendComps = ['administration', 'provider', 'rest-api', 'ctn'];
-const componentMap = {
-  client: 'client',
-  administration: 'backend',
-  provider: 'backend',
-  'rest-api': 'backend',
-  ctn: 'backend',
-};
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const buildHeaders = (url) => ({
   'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0',
@@ -104,7 +98,7 @@ const buildHeaders = (url) => ({
   'X-CSRF-Token': csrfToken,
   'X-Requested-With': 'XMLHttpRequest',
   'Content-Type': 'application/json',
-  gitlabUri,
+  Origin,
   Connection: 'keep-alive',
   Cookie,
   'Sec-Fetch-Dest': 'empty',
@@ -185,7 +179,7 @@ const generateBuildConfigs = (values = {}) => {
 
   // Client config
   if (values.components.includes('client')) {
-    configs.client.config = makeConfig(`${gitlabUri}/cxd/${project}-client/-/pipelines`, {
+    configs.client.config = makeConfig(`${Origin}/cxd/${project}-client/-/pipelines`, {
       ...dataBase,
     });
   }
@@ -224,7 +218,7 @@ const generateBuildStatusConfigs = (values = {}, configs) => {
 
   if (values.components.includes('client') && configs.client.buildId) {
     configs.client.statusConfig = makeConfig(
-      `${gitlabUri}/cxd/${project}-client/-/pipelines/${configs.client.buildId}`,
+      `${Origin}/cxd/${project}-client/-/pipelines/${configs.client.buildId}`,
       null,
       'get',
     );
@@ -295,7 +289,6 @@ const convertParamsToMap = async (item, type) => {
     ACTIONS.REFACTOR,
     ACTIONS.BACKUP,
     ACTIONS.MERGE,
-    ACTIONS.BUILD, // to be removed
   ];
   const skipCheck = itemsToSkipCheck.includes(type);
   let live = false;
@@ -341,45 +334,6 @@ const convertParamsToMap = async (item, type) => {
     return acc;
   }, {});
 };
-const toCamelCase = (words) => {
-  return words.reduce(
-    (result, word, index) =>
-      result +
-      (!index ? word.toLowerCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()),
-    '',
-  );
-};
-const getPipelineVariables = (values) => {
-  if (!values.instance) {
-    values.instance = 'dev';
-  }
-
-  const variables = {};
-  const configMap = values.components.split(' ').reduce((acc, comp) => {
-    if (values.instance !== 'dev') {
-      variables['TAG'] = values.instance;
-    }
-
-    acc[componentMap[comp] || comp] = {
-      projectId: projectIdMap[toCamelCase([values.project, componentMap[comp] || comp])],
-      ref: values.instance === 'dev' ? buildBranchMap.dev : buildBranchMap[values.instance],
-    };
-
-    if (comp !== 'client') {
-      if (variables['APPS']) {
-        variables['APPS'] += ` ${comp}`;
-      } else {
-        variables['APPS'] = comp;
-      }
-
-      acc[componentMap[comp] || comp].variables = variables;
-    }
-
-    return acc;
-  }, {});
-
-  return { configMap };
-};
 
 module.exports = {
   convertParamsToMap,
@@ -396,6 +350,4 @@ module.exports = {
   openAIModel,
   backupConfig,
   restoreConfig,
-  toCamelCase,
-  getPipelineVariables,
 };
