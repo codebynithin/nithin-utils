@@ -64,3 +64,9 @@ For a complete list of changes and discussion, see [Issue #2](https://github.com
 ### Features
 
 - Added support for automating backup, see [Issue #12](https://github.com/codebynithin/nithin-utils/issues/12).
+
+## [1.5.0] - 2025-10-22
+
+### Features
+
+- Added support for automating merge, see [Issue #14](https://github.com/codebynithin/nithin-utils/issues/14).
