@@ -10,5 +10,6 @@ module.exports = {
     REFACTOR: 'refactor',
     BACKUP: 'backup',
     MERGE: 'merge',
+    TASK: 'task',
   },
 };

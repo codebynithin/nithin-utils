@@ -288,6 +288,7 @@ const convertParamsToMap = async (item, type) => {
     ACTIONS.REFACTOR,
     ACTIONS.BACKUP,
     ACTIONS.MERGE,
+    ACTIONS.TASK,
   ];
   const skipCheck = itemsToSkipCheck.includes(type);
   let live = false;

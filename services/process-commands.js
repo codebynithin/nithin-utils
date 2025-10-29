@@ -8,6 +8,7 @@ const { mrAIReview } = require('./review');
 const { refactor } = require('./refactor');
 const { backup } = require('./mongodb-backup');
 const { merge } = require('./merge');
+const { getZohoTasks } = require('./zoho-tasks');
 
 const processArgs = async (type, value) => {
   try {
@@ -194,6 +195,22 @@ project list:
         }
 
         await backup(values);
+
+        break;
+      }
+
+      case ACTIONS.TASK: {
+        if (value === '-help' || value === '--h') {
+          console.log(`Usage: \tnu task -task <task number> -sprint <sprint number>
+
+Create git branch for specified task number.`);
+
+          return;
+        }
+
+        const tasks = await getZohoTasks(values);
+
+        console.log(tasks);
 
         break;
       }
